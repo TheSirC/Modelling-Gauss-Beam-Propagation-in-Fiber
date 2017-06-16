@@ -70,7 +70,7 @@ for idx = 2:numel(z)
         
     else
         % Free space matrix (air or silica)
-        B = zTemp -z(idx-1); % Position of the considered point (variable)
+        B = zTemp - z(idx-1); % Position of the considered point (variable)
         C = 0;
         D = 1;
         Mp = [A,B;
