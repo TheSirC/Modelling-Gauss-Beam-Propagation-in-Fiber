@@ -17,7 +17,7 @@ zr = w0/On; % Rayleigh distance
 % Fiber parameters
 
 R = 62.5e-6; % Curvature radius
-zi = 0:-1e-6:-R ; % Position of the interface
+zi = -40e-6:-0.5e-6:-43e-6 ; % Position of the interface
 
 %% 
 % Numerical parameters
@@ -99,3 +99,9 @@ for dw = 1:numel(zi)
     [~,pF] = max(var(P,0,2));
     Wf(1,dw) = ((z(1,end)-z(1,1))*(pF-pI(1,1))/res); 
 end
+
+%% Plotting
+plot(-zi, Wf,-zi,-zi);
+ax = gca; 
+xlabel('Objective focalisation spot'); ax.XAxis.Exponent = -6;
+ylabel('Calculated focalisation spot'); ax.YAxis.Exponent = -6;
