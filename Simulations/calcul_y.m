@@ -22,9 +22,9 @@ zmax = zi + R; % Radius of the fiber
 %% 
 % Numerical parameters
 
-res = 1.5e7; % Numerical resolution 
+res = 1e2; % Numerical resolution 
 y = linspace(-2*w0,2*w0,res); % Transverse coordinates
-z = linspace(-2*zmax,2*zmax,R*res); % Propagation coordinates
+z = linspace(-2*zmax,2*zmax,res); % Propagation coordinates
 %% Simulations
 % Inline function to compute the Complex beam parameter
 
@@ -36,7 +36,7 @@ w = @(z) w0*sqrt(1+(z/z(1,1)^2));
 %% 
 % Matrix representation of the picture
 
-P = [];
+Py = [];
 
 W = NaN(size(z)); % Matrix containing all the values for the radius of the beam
 
@@ -47,13 +47,13 @@ passed = false; % Boolean checking that we only pass the interface once (Numeric
 A = 1;
 
 for idx = 2:numel(z)
-    zTemp = z(idx); % Retrieving value corresponding to the index (Parallelization artefact)
+    zTemp = z(idx); % Retrieving value corresponding to the index
     
     % Interface case
-    if zTemp >= zi && ~passed % <- Not passed
-        % Air/Silica curved interface ABCD matrix
+    if zTemp >= zi && ~passed % <- Not passed the interface
+        % Air/Silica flat interface ABCD matrix
         B = 0;
-        C = (Na-Ns)/(R*Ns);
+        C = 0;
         D = Na/Ns;
         Mas = [A,B;
             C,D];
@@ -91,17 +91,17 @@ for idx = 2:numel(z)
         .*(exp(-(1i*pi*x.^2)/(l*Q(1,idx)))...
         .*polyval(hermitePoly(M^2),sqrt(2)*(M.*x)/(W(1,idx))));
     I = abs(feval(U,y,zTemp).^2);
-    P = vertcat(P,I);
+    Py = vertcat(Py,I);
 end
 %% Plotting
 % Intensity
-
-imagesc(P'); colormap(hot); colorbar; 
+ay = gca;
+imagesc(Py'); colormap(hot); colorbar; 
 
 pI = find(z >= zi); % Retreving the position of the interface in the matrix
-[~,pF] = max(var(P,0,2)); % Retreving the position of focalisation in the matrix
+[~,pF] = max(var(Py,0,2)); % Retreving the position of focalisation in the matrix
 
 % Formatting the figure
-ax.XTickLabelRotation = 45;
-xlabel('z values'); ax.XTick = [0 pI(1,1) pF res-1]; ax.XTickLabel = {'0','interface','focalisation','center'};
-ylabel('x values'); ax.YTick = [1 res/2 res]; ax.YTickLabel = {'-2\omega_0','0','2\omega_0'};
+ay.XTickLabelRotation = 45;
+xlabel('z values'); ay.XTick = [0 pI(1,1) pF res-1]; ay.XTickLabel = {'0','interface','focalisation','center'};
+ylabel('y values'); ay.YTick = [1 res/2 res]; ay.YTickLabel = {'-2\omega_0','0','2\omega_0'};
