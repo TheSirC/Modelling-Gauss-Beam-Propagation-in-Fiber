@@ -1,4 +1,4 @@
-function [] = calcul_x()
+function [Px,pIx,pFx] = calcul_x()
 %% 2D Simulation of the gaussian beam through an optical fiber
 % Every parameter in this program is in SI units.
 %% Parameters
@@ -34,7 +34,7 @@ global w;
 
 %% Simulations
 % Matrix representation of the picture
-
+global Px;
 Px = [];
 
 W = NaN(size(z)); % Matrix containing all the values for the radius of the beam
@@ -102,6 +102,6 @@ msgbox(sprintf('The position of focalisation is calculated to be at %gm after th
     ((z(1,end)-z(1,1))*(pFx(2,1)-pIx(1,1))/res)));
 ax.XTickLabelRotation = 45;
 xlabel('z values'); ax.XTick = [0 pIx(1,1) pFx(2,1) res-1]; ax.XTickLabel = {'0','interface','focalisation','center'};
-ylabel('x values'); ax.YTick = [1 res/2 res]; ax.YTickLabel = {sprintf('-%d\omega_0','0','%d\omega_0',x_window_width,x_window_width)};
+ylabel('x values'); ax.YTick = [1 res/2 res]; ax.YTickLabel = {'-k\omega_0','0','k\omega_0'};
 
 end

@@ -35,7 +35,7 @@ zmax = zi + R; % Radius of the fiber
 % Numerical parameters
 
 global res;
-res = 1e-6; % Numerical resolution
+res = 1.5e3; % Numerical resolution
 global x_window_width;
 x_window_width = 64;
 global y_window_width;
@@ -47,7 +47,8 @@ global q;
 q = @(z) z + 1i*zr; % Inline function to compute the Complex beam parameter
 global w;
 w = @(z) w0*sqrt(1+(z/z(1,1)^2)); % Inline function to compute the Gaussian beam width
+
 %% Simulations
 
-calcul_x;
-calcul_y;
+[Px,pIx,pFx] = calcul_x;
+[Py,pIy,pFy] = calcul_y;
