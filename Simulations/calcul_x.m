@@ -23,7 +23,7 @@ zmax = zi + R; % Radius of the fiber
 % Numerical parameters
 
 res = 1.5e3; % Numerical resolution 
-y = linspace(-64*w0,64*w0,res); % Transverse coordinates
+x = linspace(-64*w0,64*w0,res); % Transverse coordinates
 z = linspace(-2*zmax,2*zmax,res); % Propagation coordinates
 %% Simulations
 % Inline function to compute the Complex beam parameter
@@ -36,7 +36,7 @@ w = @(z) w0*sqrt(1+(z/z(1,1)^2));
 %% 
 % Matrix representation of the picture
 
-Py = [];
+Px = [];
 
 W = NaN(size(z)); % Matrix containing all the values for the radius of the beam
 
@@ -47,13 +47,13 @@ passed = false; % Boolean checking that we only pass the interface once (Numeric
 A = 1;
 
 for idx = 2:numel(z)
-    zTemp = z(idx); % Retrieving value corresponding to the index
+    zTemp = z(idx); % Retrieving value corresponding to the index (Parallelization artefact)
     
     % Interface case
-    if zTemp >= zi && ~passed % <- Not passed the interface
-        % Air/Silica flat interface ABCD matrix
+    if zTemp >= zi && ~passed % <- Not passed
+        % Air/Silica curved interface ABCD matrix
         B = 0;
-        C = 0;
+        C = (Na-Ns)/(R*Ns);
         D = Na/Ns;
         Mas = [A,B;
             C,D];
@@ -90,21 +90,22 @@ for idx = 2:numel(z)
     U = @(x,zTemp) 1/Q(1,idx)^(M^2/2)... <- For readability
         .*(exp(-(1i*pi*x.^2)/(l*Q(1,idx)))...
         .*polyval(hermitePoly(M^2),sqrt(2)*(M.*x)/(W(1,idx))));
-    I = abs(feval(U,y,zTemp).^2);
-    Py = vertcat(Py,I);
+    I = abs(feval(U,x,zTemp).^2);
+    Px = vertcat(Px,I);
 end
 %% Plotting
 % Intensity
-ay = gca;
-imagesc(Py'); colormap(hot); colorbar; 
 
-pIy = find(z >= zi); % Retreving the position of the interface in the matrix
-pFy = find(diff(sign(diff(var(Px,0,2)))) == 2); % Retreving the position of focalisation in the matrix...
+imagesc(Px'); colormap(hot); colorbar;
+ax = gca;
+
+pIx = find(z >= zi); % Retreving the position of the interface in the matrix
+pFx = find(diff(sign(diff(var(Px,0,2)))) == 2); % Retreving the position of focalisation in the matrix...
                             % by calculating the first zero of the first derivative of the variance...
                             % AFTER the interface
 
 msgbox(sprintf('The position of focalisation is calculated to be at %gm after the interface.',... <- Displaying the position in a message box
-                ((z(1,end)-z(1,1))*(pFy(2,1)-pIy(1,1))/res))); 
+                ((z(1,end)-z(1,1))*(pFx(2,1)-pIx(1,1))/res))); 
 ax.XTickLabelRotation = 45;
-xlabel('z values'); ax.XTick = [0 pIy(1,1) pFy(2,1) res-1]; ax.XTickLabel = {'0','interface','focalisation','center'};
+xlabel('z values'); ax.XTick = [0 pIx(1,1) pFx(2,1) res-1]; ax.XTickLabel = {'0','interface','focalisation','center'};
 ylabel('x values'); ax.YTick = [1 res/2 res]; ax.YTickLabel = {'-64\omega_0','0','64\omega_0'};
