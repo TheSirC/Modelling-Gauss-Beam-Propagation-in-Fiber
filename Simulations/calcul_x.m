@@ -1,39 +1,38 @@
+function [] = calcul_x()
 %% 2D Simulation of the gaussian beam through an optical fiber
 % Every parameter in this program is in SI units.
 %% Parameters
 % Physical parameters
 
-l = 1000e-6; % Wavelength
-Ns = 1.45; % Silica idex
-Na = 1; % Air index (for later)
-%% 
+global l; % Wavelength
+global Ns; % Silica idex
+global Na; % Air index (for later)
+%%
 % Laser parameters
 
-On = 4e-1; % Numerical aperture
-w0 = 3e-6; % Waist
-M = sqrt(pi*w0^2*On/l); % Square root of the beam-quality factor
-zr = w0/On; % Rayleigh distance
-%% 
+global On; % Numerical aperture
+global w0; % Waist
+global M; % Square root of the beam-quality factor
+global zr; % Rayleigh distance
+%%
 % Fiber parameters
 
-R = 62.5e-6; % Curvature radius
-zi = -20e-6 ; % Position of the interface
-zmax = zi + R; % Radius of the fiber
-%% 
+global R; % Curvature radius
+global zi; % Position of the interface
+global zmax; % Radius of the fiber
+%%
 % Numerical parameters
 
-res = 1.5e3; % Numerical resolution 
-x = linspace(-64*w0,64*w0,res); % Transverse coordinates
+global res; % Numerical resolution
+global x_window_width;
+x = linspace(-x_window_width*w0,x_window_width*w0,res); % Transverse coordinates
 z = linspace(-2*zmax,2*zmax,res); % Propagation coordinates
+
+% Global inline functions 
+global q;
+global w;
+
 %% Simulations
-% Inline function to compute the Complex beam parameter
-
-q = @(z) z + 1i*zr;
-%% 
-% Inline function to compute the Gaussian beam width
-
-w = @(z) w0*sqrt(1+(z/z(1,1)^2));
-%% 
 % Matrix representation of the picture
 
 Px = [];
@@ -47,10 +46,10 @@ passed = false; % Boolean checking that we only pass the interface once (Numeric
 A = 1;
 
 for idx = 2:numel(z)
-    zTemp = z(idx); % Retrieving value corresponding to the index (Parallelization artefact)
+    zTemp = z(idx); % Retrieving value corresponding to the index
     
     % Interface case
-    if zTemp >= zi && ~passed % <- Not passed
+    if zTemp >= zi && ~passed % <- Not passed the interface
         % Air/Silica curved interface ABCD matrix
         B = 0;
         C = (Na-Ns)/(R*Ns);
@@ -62,10 +61,6 @@ for idx = 2:numel(z)
         Q2 = Mas*[Q(idx-1);1];
         Q(1,idx) = Q2(1,1)/Q2(2,1); % Retrieving the first line and normalizing
         passed = true;
-        
-%         Q2 = Masf*[Q(idx-1);1];
-%         Q(1,idx) = Q2(1,1)/Q2(2,1); % Retrieving the first line and normalizing
-%         passed = true;
         
     else
         % Free space matrix (air or silica)
@@ -82,10 +77,10 @@ for idx = 2:numel(z)
     
     W(1,idx) = feval(w,zTemp); % Keeping the current waist to find the minimum at the end
     
-%     % Computation of the real radius
-%     R = 1/(1/Q(1,idx)+1i*l*M^2/(pi*Ns*W(1,idx)^2));
-%     Pr = [Pr,R];
-     
+    %     % Computation of the real radius
+    %     R = 1/(1/Q(1,idx)+1i*l*M^2/(pi*Ns*W(1,idx)^2));
+    %     Pr = [Pr,R];
+    
     % Computation of the intensity on the zTemp-plane
     U = @(x,zTemp) 1/Q(1,idx)^(M^2/2)... <- For readability
         .*(exp(-(1i*pi*x.^2)/(l*Q(1,idx)))...
@@ -96,16 +91,17 @@ end
 %% Plotting
 % Intensity
 
-imagesc(Px'); colormap(hot); colorbar;
+figure; imagesc(Px'); colormap(hot); colorbar;
 ax = gca;
-
 pIx = find(z >= zi); % Retreving the position of the interface in the matrix
 pFx = find(diff(sign(diff(var(Px,0,2)))) == 2); % Retreving the position of focalisation in the matrix...
-                            % by calculating the first zero of the first derivative of the variance...
-                            % AFTER the interface
+                                                % by calculating the first zero of the first derivative of the variance...
+                                                % AFTER the interface
 
 msgbox(sprintf('The position of focalisation is calculated to be at %gm after the interface.',... <- Displaying the position in a message box
-                ((z(1,end)-z(1,1))*(pFx(2,1)-pIx(1,1))/res))); 
+    ((z(1,end)-z(1,1))*(pFx(2,1)-pIx(1,1))/res)));
 ax.XTickLabelRotation = 45;
 xlabel('z values'); ax.XTick = [0 pIx(1,1) pFx(2,1) res-1]; ax.XTickLabel = {'0','interface','focalisation','center'};
-ylabel('x values'); ax.YTick = [1 res/2 res]; ax.YTickLabel = {'-64\omega_0','0','64\omega_0'};
+ylabel('x values'); ax.YTick = [1 res/2 res]; ax.YTickLabel = {sprintf('-%d\omega_0','0','%d\omega_0',x_window_width,x_window_width)};
+
+end

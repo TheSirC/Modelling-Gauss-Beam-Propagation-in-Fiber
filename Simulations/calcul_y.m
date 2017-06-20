@@ -1,39 +1,38 @@
+function [] = calcul_y()
 %% 2D Simulation of the gaussian beam through an optical fiber
 % Every parameter in this program is in SI units.
 %% Parameters
 % Physical parameters
 
-l = 1000e-6; % Wavelength
-Ns = 1.45; % Silica idex
-Na = 1; % Air index (for later)
-%% 
+global l; % Wavelength
+global Ns; % Silica idex
+global Na; % Air index (for later)
+%%
 % Laser parameters
 
-On = 4e-1; % Numerical aperture
-w0 = 3e-6; % Waist
-M = sqrt(pi*w0^2*On/l); % Square root of the beam-quality factor
-zr = w0/On; % Rayleigh distance
-%% 
+global On; % Numerical aperture
+global w0; % Waist
+global M; % Square root of the beam-quality factor
+global zr; % Rayleigh distance
+%%
 % Fiber parameters
 
-R = 62.5e-6; % Curvature radius
-zi = -20e-6 ; % Position of the interface
-zmax = zi + R; % Radius of the fiber
-%% 
+global R; % Curvature radius
+global zi; % Position of the interface
+global zmax; % Radius of the fiber
+%%
 % Numerical parameters
 
-res = 1.5e3; % Numerical resolution 
-y = linspace(-64*w0,64*w0,res); % Transverse coordinates
+global res; % Numerical resolution
+global y_window_width;
+y = linspace(-y_window_width*w0,y_window_width*w0,res); % Transverse coordinates
 z = linspace(-2*zmax,2*zmax,res); % Propagation coordinates
+
+% Global inline functions 
+global q;
+global w;
+
 %% Simulations
-% Inline function to compute the Complex beam parameter
-
-q = @(z) z + 1i*zr;
-%% 
-% Inline function to compute the Gaussian beam width
-
-w = @(z) w0*sqrt(1+(z/z(1,1)^2));
-%% 
 % Matrix representation of the picture
 
 Py = [];
@@ -63,10 +62,6 @@ for idx = 2:numel(z)
         Q(1,idx) = Q2(1,1)/Q2(2,1); % Retrieving the first line and normalizing
         passed = true;
         
-%         Q2 = Masf*[Q(idx-1);1];
-%         Q(1,idx) = Q2(1,1)/Q2(2,1); % Retrieving the first line and normalizing
-%         passed = true;
-        
     else
         % Free space matrix (air or silica)
         B = zTemp - z(idx-1); % Position of the considered point (variable)
@@ -82,9 +77,9 @@ for idx = 2:numel(z)
     
     W(1,idx) = feval(w,zTemp); % Keeping the current waist to find the minimum at the end
     
-%     % Computation of the real radius
-%     R = 1/(1/Q(1,idx)+1i*l*M^2/(pi*Ns*W(1,idx)^2));
-%     Pr = [Pr,R];
+    %     % Computation of the real radius
+    %     R = 1/(1/Q(1,idx)+1i*l*M^2/(pi*Ns*W(1,idx)^2));
+    %     Pr = [Pr,R];
      
     % Computation of the intensity on the zTemp-plane
     U = @(x,zTemp) 1/Q(1,idx)^(M^2/2)... <- For readability
@@ -95,16 +90,18 @@ for idx = 2:numel(z)
 end
 %% Plotting
 % Intensity
-ay = gca;
-imagesc(Py'); colormap(hot); colorbar; 
 
+figure; imagesc(Py'); colormap(hot); colorbar; 
+ay = gca;
 pIy = find(z >= zi); % Retreving the position of the interface in the matrix
-pFy = find(diff(sign(diff(var(Px,0,2)))) == 2); % Retreving the position of focalisation in the matrix...
-                            % by calculating the first zero of the first derivative of the variance...
-                            % AFTER the interface
+pFy = find(diff(sign(diff(var(Py,0,2)))) == 2); % Retreving the position of focalisation in the matrix...
+                                                % by calculating the first zero of the first derivative of the variance...
+                                                % AFTER the interface
 
 msgbox(sprintf('The position of focalisation is calculated to be at %gm after the interface.',... <- Displaying the position in a message box
                 ((z(1,end)-z(1,1))*(pFy(2,1)-pIy(1,1))/res))); 
-ax.XTickLabelRotation = 45;
-xlabel('z values'); ax.XTick = [0 pIy(1,1) pFy(2,1) res-1]; ax.XTickLabel = {'0','interface','focalisation','center'};
-ylabel('x values'); ax.YTick = [1 res/2 res]; ax.YTickLabel = {'-64\omega_0','0','64\omega_0'};
+ay.XTickLabelRotation = 45;
+xlabel('z values'); ay.XTick = [0 pIy(1,1) pFy(2,1) res-1]; ay.XTickLabel = {'0','interface','focalisation','center'};
+ylabel('y values'); ay.YTick = [1 res/2 res]; % ay.YTickLabel = {sprintf('-%d\omega_0','0','%d\omega_0',y_window_width,y_window_width)};
+
+end
