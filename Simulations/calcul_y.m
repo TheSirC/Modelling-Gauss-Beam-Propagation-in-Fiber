@@ -1,4 +1,4 @@
-%% Simulation of the gaussian beam through an optical fiber
+%% 2D Simulation of the gaussian beam through an optical fiber
 % Every parameter in this program is in SI units.
 %% Parameters
 % Physical parameters
@@ -22,7 +22,7 @@ zmax = zi + R; % Radius of the fiber
 %% 
 % Numerical parameters
 
-res = 1e2; % Numerical resolution 
+res = 1.5e3; % Numerical resolution 
 y = linspace(-2*w0,2*w0,res); % Transverse coordinates
 z = linspace(-2*zmax,2*zmax,res); % Propagation coordinates
 %% Simulations
@@ -98,10 +98,13 @@ end
 ay = gca;
 imagesc(Py'); colormap(hot); colorbar; 
 
-pI = find(z >= zi); % Retreving the position of the interface in the matrix
-[~,pF] = max(var(Py,0,2)); % Retreving the position of focalisation in the matrix
+pIy = find(z >= zi); % Retreving the position of the interface in the matrix
+pFy = find(diff(sign(diff(var(Px,0,2)))) == 2); % Retreving the position of focalisation in the matrix...
+                            % by calculating the first zero of the first derivative of the variance...
+                            % AFTER the interface
 
-% Formatting the figure
-ay.XTickLabelRotation = 45;
-xlabel('z values'); ay.XTick = [0 pI(1,1) pF res-1]; ay.XTickLabel = {'0','interface','focalisation','center'};
-ylabel('y values'); ay.YTick = [1 res/2 res]; ay.YTickLabel = {'-2\omega_0','0','2\omega_0'};
+msgbox(sprintf('The position of focalisation is calculated to be at %gm after the interface.',... <- Displaying the position in a message box
+                ((z(1,end)-z(1,1))*(pFy(2,1)-pIy(1,1))/res))); 
+ax.XTickLabelRotation = 45;
+xlabel('z values'); ax.XTick = [0 pIy(1,1) pFy(2,1) res-1]; ax.XTickLabel = {'0','interface','focalisation','center'};
+ylabel('x values'); ax.YTick = [1 res/2 res]; ax.YTickLabel = {'-64\omega_0','0','64\omega_0'};
