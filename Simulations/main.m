@@ -58,5 +58,11 @@ w = @(z) w0*sqrt(1+(z/z(1,1)^2)); % Inline function to compute the Gaussian beam
 [Py,pIy,pFy] = calcul_y;
 
 % Computations for the ellipses
-[dX,dY] = calcul_ellipse(Px,Py,pFx(2,1));
-fplot3(@(t) dX*cos(t), @(t) dY*sin(t), @(t) pt)
+for ze = pFx(2,1)-100:pFy(2,1)+100
+    [dX,dY] = calcul_ellipse(Px,Py,ze);
+    X = @(t) dX*cos(t);
+    Y = @(t) dY*sin(t);
+    Z = @(t) ze;
+    fplot3(X,Y,Z); hold on
+end
+hold off;
