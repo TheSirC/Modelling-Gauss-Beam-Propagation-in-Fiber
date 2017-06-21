@@ -103,4 +103,8 @@ ax.XTickLabelRotation = 45;
 xlabel('z values'); ax.XTick = [0 pIx(1,1) pFx(2,1) res-1]; ax.XTickLabel = {'0','interface','focalisation','center'};
 ylabel('x values'); ax.YTick = [1 res/2 res]; ax.YTickLabel = {'-k\omega_0','0','k\omega_0'};
 
+% Writing images to specific file
+print('PlanXZ','-dpng');
+
+
 end
