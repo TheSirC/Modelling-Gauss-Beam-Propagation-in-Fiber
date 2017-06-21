@@ -26,7 +26,7 @@ global zmax; % Radius of the fiber
 global res; % Numerical resolution
 global y_window_width;
 y = linspace(-y_window_width*w0,y_window_width*w0,res); % Transverse coordinates
-z = linspace(-2*zmax,2*zmax,res); % Propagation coordinates
+global z;
 
 % Global inline functions 
 global q;
@@ -34,7 +34,6 @@ global w;
 
 %% Simulations
 % Matrix representation of the picture
-global Py;
 Py = [];
 
 W = NaN(size(z)); % Matrix containing all the values for the radius of the beam
@@ -98,8 +97,8 @@ pFy = find(diff(sign(diff(var(Py,0,2)))) == 2); % Retreving the position of foca
                                                 % by calculating the first zero of the first derivative of the variance...
                                                 % AFTER the interface
 
-msgbox(sprintf('The position of focalisation is calculated to be at %gm after the interface.',... <- Displaying the position in a message box
-                ((z(1,end)-z(1,1))*(pFy(2,1)-pIy(1,1))/res))); 
+msgbox(sprintf('The position of focalisation for the flat direction is calculated to be at %gm after the interface.',... <- Displaying the position in a message box
+                ((z(1,end)-z(1,1))*(pFy(2,1)-pIy(1,1))/res)),'Success','Help'); 
 ay.XTickLabelRotation = 45;
 xlabel('z values'); ay.XTick = [0 pIy(1,1) pFy(2,1) res-1]; ay.XTickLabel = {'0','interface','focalisation','center'};
 ylabel('y values'); ay.YTick = [1 res/2 res]; ay.YTickLabel = {'-k\omega_0','0','k\omega_0'};

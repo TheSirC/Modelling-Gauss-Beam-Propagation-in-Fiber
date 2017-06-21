@@ -40,6 +40,10 @@ global x_window_width;
 x_window_width = 64;
 global y_window_width;
 y_window_width = 64;
+global z;
+z = linspace(-2*zmax,2*zmax,res); % Propagation coordinates
+
+
 %% 
 % Inline functions
 
@@ -49,6 +53,10 @@ global w;
 w = @(z) w0*sqrt(1+(z/z(1,1)^2)); % Inline function to compute the Gaussian beam width
 
 %% Simulations
-
+% Computations for both axes
 [Px,pIx,pFx] = calcul_x;
 [Py,pIy,pFy] = calcul_y;
+
+% Computations for the ellipses
+[dX,dY] = calcul_ellipse(Px,Py,pFx(2,1));
+fplot3(@(t) dX*cos(t), @(t) dY*sin(t), @(t) pt)
