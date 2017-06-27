@@ -13,7 +13,7 @@ prompt = {'Enter the wavelength \lamda of the laser (in \mu m) :',...
           'Enter the number of points for the simulation :'};
 dlg_title = 'Parameters for the simulations';
 num_lines = 1;
-defaultans = {'1000','1','1.45','4e-1','3e-6','62.5e-6','-40e-6','1.5e3'};
+defaultans = {'1000','1','1.45','4','3','62.5','-40','1500'};
 options.Interpreter = 'tex';
 answer = inputdlg(prompt,dlg_title,num_lines,defaultans,options);
 
@@ -21,18 +21,18 @@ answer = inputdlg(prompt,dlg_title,num_lines,defaultans,options);
 % Physical parameters
 
 global l;
-l = check_user_input(answer{1}) * 10e-6; % Wavelength
+l = check_user_input(answer,1,defaultans) * 10e-9; % Wavelength
 global Ns;
-Ns = check_user_input(answer{3}); % Silica idex
+Ns = check_user_input(answer,3,defaultans); % Silica idex
 global Na;
-Na = check_user_input(answer{2}); % Air index (for later)
+Na = check_user_input(answer,2,defaultans); % Air index (for later)
 %% 
 % Laser parameters
 
 global On;
-On = check_user_input(answer{4}); % Numerical aperture
+On = check_user_input(answer,4,defaultans); % Numerical aperture
 global w0;
-w0 = check_user_input(answer{5}) * 10e-6; % Waist
+w0 = check_user_input(answer,5,defaultans) * 10e-9; % Waist
 global M;
 M = sqrt(pi*w0^2*On/l); % Square root of the beam-quality factor
 global zr;
@@ -41,16 +41,16 @@ zr = w0/On; % Rayleigh distance
 % Fiber parameters
 
 global R;
-R = check_user_input(answer{6}) * 10e-6; % Curvature radius
+R = check_user_input(answer,6,defaultans) * 10e-9; % Curvature radius
 global zi;
-zi = check_user_input(answer{7}) * 10e-6;  % Position of the interface
-global zmax;
+zi = check_user_input(answer,7,defaultans) * 10e-9;  % Position of the interface
+global zmax;    
 zmax = zi + R; % Radius of the fiber
 %% 
 % Numerical parameters
 
 global res;
-res = check_user_input(answer{8}); % Numerical resolution
+res = check_user_input(answer,8,defaultans); % Numerical resolution
 global x_window_width;
 x_window_width = 64;
 global y_window_width;
@@ -73,7 +73,7 @@ w = @(z) w0*sqrt(1+(z/z(1,1)^2)); % Inline function to compute the Gaussian beam
 [Py,pIy,pFy] = calcul_y;
 
 % Computations for the ellipses
-for ze = pFx(2,1)-200:pFy(2,1)+200
+for ze = pFx(2,1)-50:pFy(2,1)+50
     [dX,dY] = calcul_ellipse(Px,Py,ze);
     X = @(t) dX*cos(t);
     Y = @(t) dY*sin(t);
@@ -81,3 +81,7 @@ for ze = pFx(2,1)-200:pFy(2,1)+200
     fplot3(X,Y,Z); hold on
 end
 hold off;
+
+% Writing 3D view to specific file
+print('IsometricView','-dpng');
+

@@ -90,7 +90,7 @@ end
 %% Plotting
 % Intensity
 
-figure; imagesc(Py'); colormap(hot); colorbar; 
+figure; imagesc(Py'); colormap(hot); colorbar;
 ay = gca;
 pIy = find(z >= zi); % Retreving the position of the interface in the matrix
 pFy = find(diff(sign(diff(var(Py,0,2)))) == 2); % Retreving the position of focalisation in the matrix...
@@ -102,5 +102,9 @@ msgbox(sprintf('The position of focalisation for the flat direction is calculate
 ay.XTickLabelRotation = 45;
 xlabel('z values'); ay.XTick = [0 pIy(1,1) pFy(2,1) res-1]; ay.XTickLabel = {'0','interface','focalisation','center'};
 ylabel('y values'); ay.YTick = [1 res/2 res]; ay.YTickLabel = {'-k\omega_0','0','k\omega_0'};
+
+% Writing images to specific file
+print('PlanYZ','-dpng');
+
 
 end
