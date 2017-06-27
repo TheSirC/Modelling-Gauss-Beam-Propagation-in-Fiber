@@ -73,7 +73,7 @@ w = @(z) w0*sqrt(1+(z/z(1,1)^2)); % Inline function to compute the Gaussian beam
 [Py,pIy,pFy] = calcul_y;
 
 % Computations for the ellipses
-for ze = pFx(2,1)-200:pFy(2,1)+200
+for ze = pFx(2,1)-50:pFy(2,1)+50
     [dX,dY] = calcul_ellipse(Px,Py,ze);
     X = @(t) dX*cos(t);
     Y = @(t) dY*sin(t);
