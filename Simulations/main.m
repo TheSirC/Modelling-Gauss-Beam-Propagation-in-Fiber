@@ -3,11 +3,11 @@
 
 clear; close all;
 %% User interaction
-prompt = {'Enter the wavelength \lamda of the laser (in \mu m) :',...
+prompt = {'Enter the wavelength \lambda of the laser (in nm) :',...
           'Enter the outside index (air for example) n_1 :',...
           'Enter the inside index (silica for example) n_2 :',...
           'Enter the numerical aperture of the objective used to focus the beam \theta :',...
-          'Enter the waist w_0 (in \mu \!m) :',...
+          'Enter the waist w_0 (in \mu m) :',...
           'Enter the curvature of the fiber (its radius) R_f (in \mu m) :',...
           'Enter the focus position relative to the interface z_{focus} (in \mu m) :',...
           'Enter the number of points for the simulation :'};
@@ -21,7 +21,7 @@ answer = inputdlg(prompt,dlg_title,num_lines,defaultans,options);
 % Physical parameters
 
 global l;
-l = check_user_input(answer,1,defaultans) * 10e-9; % Wavelength
+l = check_user_input(answer,1,defaultans) * 1e-9; % Wavelength
 global Ns;
 Ns = check_user_input(answer,3,defaultans); % Silica idex
 global Na;
@@ -32,7 +32,7 @@ Na = check_user_input(answer,2,defaultans); % Air index (for later)
 global On;
 On = check_user_input(answer,4,defaultans); % Numerical aperture
 global w0;
-w0 = check_user_input(answer,5,defaultans) * 10e-9; % Waist
+w0 = check_user_input(answer,5,defaultans) * 1e-6; % Waist
 global M;
 M = sqrt(pi*w0^2*On/l); % Square root of the beam-quality factor
 global zr;
@@ -41,7 +41,7 @@ zr = w0/On; % Rayleigh distance
 % Fiber parameters
 
 global R;
-R = check_user_input(answer,6,defaultans) * 10e-9; % Curvature radius
+R = check_user_input(answer,6,defaultans) * 1e-6; % Curvature radius
 global zi;
 zi = check_user_input(answer,7,defaultans) * 10e-9;  % Position of the interface
 global zmax;    
