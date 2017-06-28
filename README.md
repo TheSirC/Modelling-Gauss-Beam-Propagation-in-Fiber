@@ -2,7 +2,7 @@
 ![Animation](https://github.com/TheSirC/Modelling-Gauss-Beam-Propagation-in-Fiber/blob/master/Simulations/Results/animation.gif)
 
 ## Theory
-The theory used to model the behavior of the beam is decribed in [P. A. Bélanger, "Beam propagation and the ABCD ray matrices," Opt. Lett. 16, 196-198 (1991)](https://github.com/TheSirC/Modelling-Gauss-Beam-Propagation-in-Fiber/blob/master/Recherches/B%C3%A9langer%20-%201991%20-%20Beam%20propagation%20and%20the%20ABCD%20ray%20matrices.pdf).
+The theory used to model the behavior of the beam is describded in [P. A. Bélanger, "Beam propagation and the ABCD ray matrices," Opt. Lett. 16, 196-198 (1991)](https://github.com/TheSirC/Modelling-Gauss-Beam-Propagation-in-Fiber/blob/master/Recherches/B%C3%A9langer%20-%201991%20-%20Beam%20propagation%20and%20the%20ABCD%20ray%20matrices.pdf).
 
 ## Programming 
 ### Intuition of the program
