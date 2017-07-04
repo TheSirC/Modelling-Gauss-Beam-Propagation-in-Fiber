@@ -52,9 +52,9 @@ zmax = zi + R; % Radius of the fiber
 global res;
 res = check_user_input(answer,8,defaultans); % Numerical resolution
 global x_window_width;
-x_window_width = 64;
+x_window_width = 32;
 global y_window_width;
-y_window_width = 64;
+y_window_width = 32;
 global z;
 z = linspace(-2*zmax,2*zmax,res); % Propagation coordinates
 
@@ -81,6 +81,18 @@ for ze = pFx(2,1)-50:pFy(2,1)+50
     fplot3(X,Y,Z); hold on
 end
 hold off;
+
+% Formatting the axes
+axes = gca;
+axes.XTickLabelRotation = -45; 
+axes.YTickLabelRotation = 45;
+axes.ZAxis.TickLabelFormat = '%.2e m';
+set(gca,'zdir','reverse'); % Switching z-axis direction (top to bottom ascending)
+xlabel('x values'); axes.XTick = [-dX 0 dX]; axes.XTickLabel = {'-k\omega_0','0','k\omega_0'};
+ylabel('y values'); axes.YTick = [-dY 0 dY]; axes.YTickLabel = {'-k\omega_0','0','k\omega_0'};
+zlabel('z values'); axes.ZTick = [ pFx(2,1)-50 (pFx(2,1)+pFy(2,1))/2 pFy(2,1)+50 ]; axes.ZTickLabel = {sprintf('%.2e',(z(1,end)-z(1,1))*(pFx(2,1)-50)/res),'non-linear center',sprintf('%.2g',(z(1,end)-z(1,1))*(pFy(2,1)+50)/res)};
+axes.ZAxis.Exponent = -6;
+
 
 % Writing 3D view to specific file
 print('IsometricView','-dpng');
