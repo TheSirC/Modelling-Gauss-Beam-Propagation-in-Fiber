@@ -72,13 +72,23 @@ w = @(z) w0*sqrt(1+(z/z(1,1)^2)); % Inline function to compute the Gaussian beam
 [Px,pIx,pFx] = calcul_x;
 [Py,pIy,pFy] = calcul_y;
 
+% Non-linear parameter
+thr = 1/(exp(1)^2); % Beam diameter
+nlthr = 7.15*thr;
+
 % Computations for the ellipses
 for ze = pFx(2,1)-50:pFy(2,1)+50
-    [dX,dY] = calcul_ellipse(Px,Py,ze);
+    [dX,dY] = calcul_ellipse(Px,Py,ze,thr);
+    [dXn,dYn] = calcul_ellipse(Px,Py,ze,nlthr);
     X = @(t) dX*cos(t);
     Y = @(t) dY*sin(t);
+    
+    Xnl = @(t) dXn*cos(t);
+    Ynl = @(t) dYn*sin(t);
+    
     Z = @(t) ze;
-    fplot3(X,Y,Z); hold on
+    fplot3(X,Y,Z,'LineWidth',0.25); hold on
+    fplot3(Xnl,Ynl,Z,'r-'); hold on
 end
 hold off;
 
