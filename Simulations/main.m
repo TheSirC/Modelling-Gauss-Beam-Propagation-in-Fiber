@@ -92,6 +92,9 @@ for ze = pFx(2,1)-50:pFy(2,1)+50
 end
 hold off;
 
+% Title
+title(sprintf('pos = %.2e m',-zi));
+
 % Formatting the axes
 axes = gca;
 axes.XTickLabelRotation = -45; 
