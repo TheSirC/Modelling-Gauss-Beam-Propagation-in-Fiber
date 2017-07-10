@@ -61,18 +61,18 @@ for idx = 2:numel(z)
         Q(1,idx) = Q2(1,1)/Q2(2,1); % Retrieving the first line and normalizing
         passed = true;
         
-    else
-        % Free space matrix (air or silica)
-        B = zTemp - z(idx-1); % Position of the considered point (variable)
-        C = 0;
-        D = 1;
-        Mp = [A,B;
-            C,D];
-        
-        % Computation of the simulated output complex beam parameter
-        Q2 = Mp*[Q(idx-1);1];
-        Q(1,idx) = Q2(1,1)/Q2(2,1); % Retrieving the first line and normalizing
-    end
+        else
+            % Free space matrix (air or silica)
+            B = zTemp - z(idx-1); % Position of the considered point (variable)
+            C = 0;
+            D = 1;
+            Mp = [A,B;
+                C,D];
+            
+            % Computation of the simulated output complex beam parameter
+            Q2 = Mp*[Q(idx-1);1];
+            Q(1,idx) = Q2(1,1)/Q2(2,1); % Retrieving the first line and normalizing
+        end
     
     W(1,idx) = feval(w,zTemp); % Keeping the current waist to find the minimum at the end
     
@@ -84,7 +84,7 @@ for idx = 2:numel(z)
         .*(exp(-(1i*pi*x.^2)/(l*Q(1,idx)))...
         .*polyval(hermitePoly(M^2),sqrt(2)*(M.*x)/(W(1,idx)))); % Inline function to compute the amplitude field
     
-    I = abs(feval(U,y,zTemp,idx).^2);
+    I = 1/2*abs(feval(U,y,zTemp,idx).^2);
     Py(idx,:) = I;
 end
 %% Plotting
