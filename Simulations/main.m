@@ -66,10 +66,7 @@ global q;
 q = @(z) z + 1i*zr; % Inline function to compute the Complex beam parameter
 global w;
 w = @(z) w0*sqrt(1+(z/z(1,1)^2)); % Inline function to compute the Gaussian beam width
-global U;
-U = @(x,zTemp) 1/Q(1,idx)^(M^2/2)... <- For readability
-        .*(exp(-(1i*pi*x.^2)/(l*Q(1,idx)))...
-        .*polyval(hermitePoly(M^2),sqrt(2)*(M.*x)/(W(1,idx)))); % Inline function to compute the amplitude field
+
 %% Simulations
 % Computations for both axes
 [Px,pIx,pFx] = calcul_x;

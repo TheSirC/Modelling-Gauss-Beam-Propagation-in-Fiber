@@ -31,7 +31,6 @@ global z;
 % Global inline functions 
 global q;
 global w;
-global U;
 
 %% Simulations
 % Matrix representation of the picture
@@ -81,7 +80,11 @@ for idx = 2:numel(z)
     %     R = 1/(1/Q(1,idx)+1i*l*M^2/(pi*Ns*W(1,idx)^2));
     %     Pr = [Pr,R];
     
-    I = abs(feval(U,y,zTemp).^2);
+    U = @(x,zTemp,idx) 1/Q(1,idx)^(M^2/2)... <- For readability
+        .*(exp(-(1i*pi*x.^2)/(l*Q(1,idx)))...
+        .*polyval(hermitePoly(M^2),sqrt(2)*(M.*x)/(W(1,idx)))); % Inline function to compute the amplitude field
+    
+    I = abs(feval(U,y,zTemp,idx).^2);
     Py(idx,:) = I;
 end
 %% Plotting
