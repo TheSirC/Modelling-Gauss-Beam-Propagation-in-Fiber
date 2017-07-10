@@ -13,7 +13,7 @@ prompt = {'Enter the wavelength \lambda of the laser (in nm) :',...
           'Enter the number of points for the simulation :'};
 dlg_title = 'Parameters for the simulations';
 num_lines = 1;
-defaultans = {'1000','1','1.45','4','3','62.5','-40','3200'};
+defaultans = {'1000','1','1.45','0.4','3','62.5','-40','3200'};
 options.Interpreter = 'tex';
 answer = inputdlg(prompt,dlg_title,num_lines,defaultans,options);
 
@@ -43,7 +43,7 @@ zr = w0/On; % Rayleigh distance
 global R;
 R = check_user_input(answer,6,defaultans) * 1e-6; % Curvature radius
 global zi;
-zi = check_user_input(answer,7,defaultans) * 10e-9;  % Position of the interface
+zi = check_user_input(answer,7,defaultans) * 1e-6;  % Position of the interface
 global zmax;    
 zmax = zi + R; % Radius of the fiber
 %% 
@@ -52,7 +52,7 @@ zmax = zi + R; % Radius of the fiber
 global res;
 res = check_user_input(answer,8,defaultans); % Numerical resolution
 global x_window_width;
-x_window_width = 32;
+x_window_width = 1;
 global y_window_width;
 y_window_width = 32;
 global z;
@@ -63,7 +63,7 @@ z = linspace(-2*zmax,2*zmax,res); % Propagation coordinates
 % Inline functions
 
 global q;
-q = @(z) z + 1i*zr; % Inline function to compute the Complex beam parameter
+q = @(z) z - 1i*zr; % Inline function to compute the Complex beam parameter
 global w;
 w = @(z) w0*sqrt(1+(z/z(1,1)^2)); % Inline function to compute the Gaussian beam width
 
