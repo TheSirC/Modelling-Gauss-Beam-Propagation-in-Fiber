@@ -31,10 +31,11 @@ global z;
 % Global inline functions 
 global q;
 global w;
+global U;
 
 %% Simulations
 % Matrix representation of the picture
-Px = [];
+Px = zeros(res-1,res);
 
 W = NaN(size(z)); % Matrix containing all the values for the radius of the beam
 
@@ -80,12 +81,8 @@ for idx = 2:numel(z)
     %     R = 1/(1/Q(1,idx)+1i*l*M^2/(pi*Ns*W(1,idx)^2));
     %     Pr = [Pr,R];
     
-    % Computation of the intensity on the zTemp-plane
-    U = @(x,zTemp) 1/Q(1,idx)^(M^2/2)... <- For readability
-        .*(exp(-(1i*pi*x.^2)/(l*Q(1,idx)))...
-        .*polyval(hermitePoly(M^2),sqrt(2)*(M.*x)/(W(1,idx))));
     I = abs(feval(U,x,zTemp).^2);
-    Px = vertcat(Px,I);
+    Px(idx,:) = I;
 end
 %% Plotting
 % Intensity
