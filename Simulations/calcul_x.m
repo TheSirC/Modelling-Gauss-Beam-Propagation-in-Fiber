@@ -7,26 +7,26 @@ function [Px,pIx,pFx] = calcul_x()
 global l; % Wavelength
 global Ns; % Silica idex
 global Na; % Air index (for later)
+
 %%
 % Laser parameters
 
-global On; % Numerical aperture
 global w0; % Waist
-global M; % Square root of the beam-quality factor
-global zr; % Rayleigh distance
+
 %%
 % Fiber parameters
 
 global R; % Curvature radius
 global zi; % Position of the interface
-global zmax; % Radius of the fiber
+
 %%
 % Numerical parameters
 
 global res; % Numerical resolution
-global x_window_width;
-x = linspace(-x_window_width*w0,x_window_width*w0,res); % Transverse coordinates
+global window_width;
+x = linspace(-window_width*w0,window_width*w0,res); % Transverse coordinates
 global z;
+global pix2meters;
 
 % Global inline functions 
 global q;
@@ -75,14 +75,12 @@ for idx = 2:numel(z)
         end
     
     W(1,idx) = feval(w,zTemp); % Keeping the current waist to find the minimum at the end
-       
-%     U = @(x,idx) 1/Q(1,idx)^(M^2/2)... <- For readability
-%         .*(exp(-(1i*pi*x.^2)/(l*Q(1,idx)))...
-%         .*polyval(hermitePoly(M^2),sqrt(2)*(M.*x)/(W(1,idx)))); % Inline function to compute the amplitude field
-    U = @(x,z,idx) sqrt(2/pi)*...
+
+    U = @(x,idx) sqrt(2/pi)*... % <- For readability purpose
         ((2*pi/l)*w0)/(2*pi*Q(1,idx))*...
-        exp(1i*(2*pi/l)*(x.^2)/(2*Q(1,idx)));
-    I = 1/2*abs(feval(U,x,z,idx).^2);
+        exp(1i*(2*pi/l)*(x.^2)/(2*Q(1,idx))); % Inline function to compute the amplitude field
+    
+    I = 1/2*abs(feval(U,x,idx).^2);
     Px(idx,:) = I;
 end
 %% Plotting
@@ -90,15 +88,15 @@ end
 figure; imagesc(Px'); colormap(hot); colorbar;
 ax = gca;
 pIx = find(z >= zi); % Retreving the position of the interface in the matrix
-% pFx = find(diff(sign(diff(var(Px,0,2)))) == 2); % Retreving the position of focalisation in the matrix...
-%                                                 % by calculating the first zero of the first derivative of the variance...
-%                                                 % AFTER the interface
-% 
-% msgbox(sprintf('The position of focalisation for the curved direction is calculated to be at %gm after the interface.',... <- Displaying the position in a message box
-%     ((z(1,end)-z(1,1))*(pFx(2,1)-pIx(1,1))/res)),'Success','Help');
-% ax.XTickLabelRotation = 45;
-% xlabel('z values'); ax.XTick = [0 pIx(1,1) pFx(2,1) res-1]; ax.XTickLabel = {'0','interface','focalisation','center'};
-% ylabel('x values'); ax.YTick = [1 res/2 res]; ax.YTickLabel = {'-k\omega_0','0','k\omega_0'};
+pFx = find(diff(sign(diff(var(Px,0,2)))) == -2); % Retreving the position of focalisation in the matrix...
+                                                % by calculating the third zero of the first derivative of the variance...
+                                                % AFTER the interface
+
+msgbox(sprintf('The position of focalisation for the curved direction is calculated to be at %gm after the interface.',... <- Displaying the position in a message box
+                ((pix2meters*(pFx(2,1)-pIx(1,1))))),'Success','Help');
+ax.XTickLabelRotation = 45;
+xlabel('z values'); ax.XTick = [0 pIx(1,1) pFx(2,1) res-1]; ax.XTickLabel = {'0','interface','focalisation','center'};
+ylabel('x values'); ax.YTick = [1 res/2 res]; ax.YTickLabel = {'-k\omega_0','0','k\omega_0'};
 
 % Writing images to specific file
 print('PlanXZ','-dpng');

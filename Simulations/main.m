@@ -51,13 +51,12 @@ zmax = zi + R; % Radius of the fiber
 
 global res;
 res = check_user_input(answer,8,defaultans); % Numerical resolution
-global x_window_width;
-x_window_width = 1;
-global y_window_width;
-y_window_width = 32;
+global window_width;
+window_width = 1;
 global z;
 z = linspace(-2*zmax,2*zmax,res); % Propagation coordinates
-
+global pix2meters;
+pix2meters = (z(1,end)-z(1,1))/res; % Conversion factor to pass from pixels measurements to SI units
 
 %% 
 % Inline functions
@@ -73,13 +72,13 @@ w = @(z) w0*sqrt(1+(z/z(1,1)^2)); % Inline function to compute the Gaussian beam
 [Py,pIy,pFy] = calcul_y;
 
 % Non-linear parameter
-thr = 1/(exp(1)^2); % Beam diameter
-nlthr = 7.15*thr;
+thr = 0.5e10; % Beam diameter
+nlthr = 2e10;
 
 % Computations for the ellipses
-for ze = pFx(2,1)-50:pFy(2,1)+50
+for ze = pFx(2,1)-250:pFy(2,1)+250
     [dX,dY] = calcul_ellipse(Px,Py,ze,thr);
-    [dXn,dYn] = calcul_ellipse(Px,Py,ze,nlthr);
+%     [dXn,dYn] = calcul_ellipse(Px,Py,ze,nlthr);
     X = @(t) dX*cos(t);
     Y = @(t) dY*sin(t);
     
@@ -88,7 +87,7 @@ for ze = pFx(2,1)-50:pFy(2,1)+50
     
     Z = @(t) ze;
     fplot3(X,Y,Z,'LineWidth',0.25); hold on
-    fplot3(Xnl,Ynl,Z,'r-'); hold on
+%     fplot3(Xnl,Ynl,Z,'r-'); hold on
 end
 hold off;
 
