@@ -85,7 +85,7 @@ for idx = 2:numel(z)
 end
 %% Plotting
 % Intensity
-figure; imagesc(Px'); colormap(hot); colorbar;
+subplot(2,1,1); imagesc(Px'); colormap(hot); colorbar; hold on;
 ax = gca;
 pIx = find(z >= zi); % Retreving the position of the interface in the matrix
 pFx = find(diff(sign(diff(var(Px,0,2)))) == -2); % Retreving the position of focalisation in the matrix...

@@ -77,15 +77,14 @@ for idx = 2:numel(z)
     
     U = @(x,idx) sqrt(2/pi)*... % <- For readability purpose
         ((2*pi/l)*w0)/(2*pi*Q(1,idx))*...
-        exp(1i*(2*pi/l)*(x.^2)/(2*Q(1,idx))); % Inline function to compute the amplitude field
+        exp(1i*(2*pi/l)*(y.^2)/(2*Q(1,idx))); % Inline function to compute the amplitude field
     
     I = 1/2*abs(feval(U,y,idx).^2);
     Py(idx,:) = I;
 end
 %% Plotting
 % Intensity
-
-figure; imagesc(Py'); colormap(hot); colorbar;
+subplot(2,1,2); imagesc(Py'); colormap(hot); colorbar; hold off;
 ay = gca;
 pIy = find(z >= zi); % Retreving the position of the interface in the matrix
 pFy = find(diff(sign(diff(var(Py,0,2)))) == -2); % Retreving the position of focalisation in the matrix...
