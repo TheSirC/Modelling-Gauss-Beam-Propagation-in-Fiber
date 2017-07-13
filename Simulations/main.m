@@ -55,8 +55,10 @@ global window_width;
 window_width = 1;
 global z;
 z = linspace(-2*zmax,2*zmax,res); % Propagation coordinates
-global pix2meters;
-pix2meters = (z(1,end)-z(1,1))/res; % Conversion factor to pass from pixels measurements to SI units
+global pix2metersXY;
+pix2metersXY = 2*window_width*w0/res; % Conversion factor to pass from pixels measurements to SI units for X and Y axis
+global pix2metersZ;
+pix2metersZ = (z(1,end)-z(1,1))/res; % Conversion factor to pass from pixels measurements to SI units for Z axis
 
 %% 
 % Inline functions
@@ -76,6 +78,7 @@ thr = 0.5e10; % Beam diameter
 nlthr = 2e10;
 
 % Computations for the ellipses
+figure;
 for ze = pFx(2,1)-250:pFy(2,1)+250
     [dX,dY] = calcul_ellipse(Px,Py,ze,thr);
 %     [dXn,dYn] = calcul_ellipse(Px,Py,ze,nlthr);
@@ -100,9 +103,9 @@ axes.XTickLabelRotation = -45;
 axes.YTickLabelRotation = 45;
 axes.ZAxis.TickLabelFormat = '%.2e m';
 set(gca,'zdir','reverse'); % Switching z-axis direction (top to bottom ascending)
-xlabel('x values'); axes.XTick = [-dX 0 dX]; axes.XTickLabel = {'-k\omega_0','0','k\omega_0'};
-ylabel('y values'); axes.YTick = [-dY 0 dY]; axes.YTickLabel = {'-k\omega_0','0','k\omega_0'};
-zlabel('z values'); axes.ZTick = [ pFx(2,1)-50 (pFx(2,1)+pFy(2,1))/2 pFy(2,1)+50 ]; axes.ZTickLabel = {sprintf('%.2e',(z(1,end)-z(1,1))*(pFx(2,1)-50)/res),'non-linear center',sprintf('%.2g',(z(1,end)-z(1,1))*(pFy(2,1)+50)/res)};
+xlabel('x values'); axes.XTick = [-dX 0 dX]; axes.XTickLabel = {'0',sprintf('%.2e',res*pix2metersXY/2),sprintf('%.2e',pix2metersXY*res)};
+ylabel('y values'); axes.YTick = [-dY 0 dY]; axes.YTickLabel = {'0',sprintf('%.2e',res*pix2metersXY/2),sprintf('%.2e',pix2metersXY*res)};
+zlabel('z values'); axes.ZTick = [ pFx(2,1)-50 (pFx(2,1)+pFy(2,1))/2 pFy(2,1)+50 ]; axes.ZTickLabel = {sprintf('%.2e',pix2metersZ*(pFx(2,1)-50)),'non-linear center',sprintf('%.2g',(z(1,end)-z(1,1))*(pFy(2,1)+50)/res)};
 axes.ZAxis.Exponent = -6;
 
 

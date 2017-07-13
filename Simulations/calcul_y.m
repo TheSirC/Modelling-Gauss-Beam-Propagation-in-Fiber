@@ -25,7 +25,8 @@ global res; % Numerical resolution
 global window_width;
 y = linspace(-window_width*w0,window_width*w0,res); % Transverse coordinates
 global z;
-global pix2meters;
+global pix2metersXY;
+global pix2metersZ;
 
 % Global inline functions 
 global q;
@@ -92,10 +93,10 @@ pFy = find(diff(sign(diff(var(Py,0,2)))) == -2); % Retreving the position of foc
                                                 % AFTER the interface
 
 msgbox(sprintf('The position of focalisation for the flat direction is calculated to be at %gm after the interface.',... <- Displaying the position in a message box
-                (pix2meters*(pFy(2,1)-pIy(1,1)))),'Success','Help'); 
+                (pix2metersZ*(pFy(2,1)-pIy(1,1)))),'Success','Help'); 
 ay.XTickLabelRotation = 45;
 xlabel('z values'); ay.XTick = [0 pIy(1,1) pFy(2,1) res-1]; ay.XTickLabel = {'0','interface','focalisation','center'};
-ylabel('y values'); ay.YTick = [1 res/2 res]; ay.YTickLabel = {'-k\omega_0','0','k\omega_0'};
+ylabel('y values'); ylabel('x values'); ay.YTick = [1 res/2 res]; ay.YTickLabel = {'0',sprintf('%.2e',res*pix2metersXY/2),sprintf('%.2e',pix2metersXY*res)};
 
 % Writing images to specific file
 print('PlanYZ','-dpng');
