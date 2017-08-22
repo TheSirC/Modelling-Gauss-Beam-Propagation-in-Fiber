@@ -10,7 +10,7 @@ global Na; % Air index (for later)
 
 %%
 % Laser parameters
-
+global M;
 global w0; % Waist
 
 %%
@@ -76,12 +76,11 @@ for idx = 2:numel(z)
         end
     
     W(1,idx) = feval(w,zTemp); % Keeping the current waist to find the minimum at the end
-
-    U = @(x,idx) sqrt(2/pi)*... % <- For readability purpose
-        ((2*pi/l)*w0)/(2*pi*Q(1,idx))*...
-        exp(1i*(2*pi/l)*(x.^2)/(2*Q(1,idx))); % Inline function to compute the amplitude field
     
-    I = 1/2*abs(feval(U,x,idx).^2);
+    U = @(x,zTemp,idx) 1/Q(1,idx)^(1/2)... <- For readability
+         .*(exp(-(1i*pi*x.^2)/(l*Q(1,idx)))); % Inline function to compute the amplitude field
+
+    I = 1/2*abs(feval(U,x,z,idx).^2);
     Px(idx,:) = I;
 end
 %% Plotting

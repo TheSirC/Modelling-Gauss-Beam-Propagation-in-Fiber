@@ -76,11 +76,10 @@ for idx = 2:numel(z)
     
     W(1,idx) = feval(w,zTemp); % Keeping the current waist to find the minimum at the end
     
-    U = @(x,idx) sqrt(2/pi)*... % <- For readability purpose
-        ((2*pi/l)*w0)/(2*pi*Q(1,idx))*...
-        exp(1i*(2*pi/l)*(y.^2)/(2*Q(1,idx))); % Inline function to compute the amplitude field
-    
-    I = 1/2*abs(feval(U,y,idx).^2);
+    U = @(y,zTemp,idx) 1/Q(1,idx)^(1/2)... <- For readability
+         .*(exp(-(1i*pi*y.^2)/(l*Q(1,idx)))); % Inline function to compute the amplitude field
+
+    I = 1/2*abs(feval(U,y,z,idx).^2);
     Py(idx,:) = I;
 end
 %% Plotting

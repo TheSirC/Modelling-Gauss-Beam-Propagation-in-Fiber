@@ -64,7 +64,7 @@ pix2metersZ = (z(1,end)-z(1,1))/res; % Conversion factor to pass from pixels mea
 % Inline functions
 
 global q;
-q = @(z) z - 1i*zr; % Inline function to compute the Complex beam parameter
+q = @(z) z + 1i*zr; % Inline function to compute the Complex beam parameter
 global w;
 w = @(z) w0*sqrt(1+(z/z(1,1)^2)); % Inline function to compute the Gaussian beam width
 
@@ -74,14 +74,20 @@ w = @(z) w0*sqrt(1+(z/z(1,1)^2)); % Inline function to compute the Gaussian beam
 [Py,pIy,pFy] = calcul_y;
 
 % Non-linear parameter
-thr = 0.5e10; % Beam diameter
-nlthr = 2e10;
+thr = 3e4; % Beam diameter
+nlthr = 3e4;
+dXmax = 0;
+dYmax = 0;
 
 % Computations for the ellipses
 figure;
-for ze = pFx(2,1)-250:pFy(2,1)+250
+for ze = pFx(2,1)-250:100:pFy(2,1)+250
     [dX,dY] = calcul_ellipse(Px,Py,ze,thr);
 %     [dXn,dYn] = calcul_ellipse(Px,Py,ze,nlthr);
+    
+    dXmax = max([dX,dXmax]);
+    dYmax = max([dY,dYmax]);
+
     X = @(t) dX*cos(t);
     Y = @(t) dY*sin(t);
     
@@ -89,7 +95,7 @@ for ze = pFx(2,1)-250:pFy(2,1)+250
     Ynl = @(t) dYn*sin(t);
     
     Z = @(t) ze;
-    fplot3(X,Y,Z,'LineWidth',0.25); hold on
+    fplot3(X,Y,Z,'LineWidth',0.25,'Color','r'); hold on
 %     fplot3(Xnl,Ynl,Z,'r-'); hold on
 end
 hold off;
@@ -103,8 +109,8 @@ axes.XTickLabelRotation = -45;
 axes.YTickLabelRotation = 45;
 axes.ZAxis.TickLabelFormat = '%.2e m';
 set(gca,'zdir','reverse'); % Switching z-axis direction (top to bottom ascending)
-xlabel('x values'); axes.XTick = [-dX 0 dX]; axes.XTickLabel = {'0',sprintf('%.2e',res*pix2metersXY/2),sprintf('%.2e',pix2metersXY*res)};
-ylabel('y values'); axes.YTick = [-dY 0 dY]; axes.YTickLabel = {'0',sprintf('%.2e',res*pix2metersXY/2),sprintf('%.2e',pix2metersXY*res)};
+xlabel('x values'); axes.XTick = [-dXmax 0 dXmax]; axes.XTickLabel = {'0',sprintf('%.2e',res*pix2metersXY/2),sprintf('%.2e',pix2metersXY*res)};
+ylabel('y values'); axes.YTick = [-dYmax 0 dYmax]; axes.YTickLabel = {'0',sprintf('%.2e',res*pix2metersXY/2),sprintf('%.2e',pix2metersXY*res)};
 zlabel('z values'); axes.ZTick = [ pFx(2,1)-50 (pFx(2,1)+pFy(2,1))/2 pFy(2,1)+50 ]; axes.ZTickLabel = {sprintf('%.2e',pix2metersZ*(pFx(2,1)-50)),'non-linear center',sprintf('%.2g',(z(1,end)-z(1,1))*(pFy(2,1)+50)/res)};
 axes.ZAxis.Exponent = -6;
 
