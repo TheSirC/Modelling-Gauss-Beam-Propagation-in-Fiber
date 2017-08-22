@@ -1,5 +1,7 @@
-
+﻿
 *.asv
 
 Simulations/*.png
 Simulations/non_paraxial_propagation\.m
+
+Simulations/Résultats/
