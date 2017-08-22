@@ -13,7 +13,7 @@ prompt = {'Enter the wavelength \lambda of the laser (in nm) :',...
           'Enter the number of points for the simulation :'};
 dlg_title = 'Parameters for the simulations';
 num_lines = 1;
-defaultans = {'1000','1','1.45','0.4','3','62.5','-40','3200'};
+defaultans = {'1023','1','1.45','0.4','3','62.5','-40','3200'};
 options.Interpreter = 'tex';
 answer = inputdlg(prompt,dlg_title,num_lines,defaultans,options);
 
