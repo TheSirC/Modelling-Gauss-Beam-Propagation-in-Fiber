@@ -53,6 +53,8 @@ global res;
 res = check_user_input(answer,8,defaultans); % Numerical resolution
 global window_width;
 window_width = 1;
+window_width_3D = 250;
+step_points_3D = 25;
 global z;
 z = linspace(-2*zmax,2*zmax,res); % Propagation coordinates
 global pix2metersXY;
@@ -73,48 +75,5 @@ w = @(z) w0*sqrt(1+(z/z(1,1)^2)); % Inline function to compute the Gaussian beam
 [Px,pIx,pFx] = calcul_x;
 [Py,pIy,pFy] = calcul_y;
 
-% Non-linear parameter
-thr = 3e4; % Beam diameter
-nlthr = 3e4;
-dXmax = 0;
-dYmax = 0;
-
-% Computations for the ellipses
-figure;
-for ze = pFx(2,1)-250:100:pFy(2,1)+250
-    [dX,dY] = calcul_ellipse(Px,Py,ze,thr);
-%     [dXn,dYn] = calcul_ellipse(Px,Py,ze,nlthr);
-    
-    dXmax = max([dX,dXmax]);
-    dYmax = max([dY,dYmax]);
-
-    X = @(t) dX*cos(t);
-    Y = @(t) dY*sin(t);
-    
-    Xnl = @(t) dXn*cos(t);
-    Ynl = @(t) dYn*sin(t);
-    
-    Z = @(t) ze;
-    fplot3(X,Y,Z,'LineWidth',0.25,'Color','r'); hold on
-%     fplot3(Xnl,Ynl,Z,'r-'); hold on
-end
-hold off;
-
-% Title
-title(sprintf('pos = %.2e m',-zi));
-
-% Formatting the axes
-axes = gca;
-axes.XTickLabelRotation = -45; 
-axes.YTickLabelRotation = 45;
-axes.ZAxis.TickLabelFormat = '%.2e m';
-set(gca,'zdir','reverse'); % Switching z-axis direction (top to bottom ascending)
-xlabel('x values'); axes.XTick = [-dXmax 0 dXmax]; axes.XTickLabel = {'0',sprintf('%.2e',res*pix2metersXY/2),sprintf('%.2e',pix2metersXY*res)};
-ylabel('y values'); axes.YTick = [-dYmax 0 dYmax]; axes.YTickLabel = {'0',sprintf('%.2e',res*pix2metersXY/2),sprintf('%.2e',pix2metersXY*res)};
-zlabel('z values'); axes.ZTick = [ pFx(2,1)-50 (pFx(2,1)+pFy(2,1))/2 pFy(2,1)+50 ]; axes.ZTickLabel = {sprintf('%.2e',pix2metersZ*(pFx(2,1)-50)),'non-linear center',sprintf('%.2g',(z(1,end)-z(1,1))*(pFy(2,1)+50)/res)};
-axes.ZAxis.Exponent = -6;
-
-
-% Writing 3D view to specific file
-print('IsometricView','-dpng');
-
+% Cmputations for the volume
+calcul_3D(Px,pFx,Py,pFy,1e4,window_width_3D,step_points_3D);
