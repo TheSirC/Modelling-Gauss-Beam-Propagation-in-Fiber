@@ -9,8 +9,10 @@ function [  ] = calcul_3D(Px,pFx,Py,pFy,thr,window_width_3D,step_points_3D)
 %  step_points_3D is the step for the drawing (the smaller the ellipse
 %  they'll be)
 
+global w;
 global z;
 global zi;
+global Pin;
 global res;
 global pix2metersXY;
 global pix2metersZ;

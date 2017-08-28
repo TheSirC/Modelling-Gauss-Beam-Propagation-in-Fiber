@@ -10,10 +10,12 @@ prompt = {'Enter the wavelength \lambda of the laser (in nm) :',...
           'Enter the waist w_0 (in \mu m) :',...
           'Enter the curvature of the fiber (its radius) R_f (in \mu m) :',...
           'Enter the focus position relative to the interface z_{focus} (in \mu m) :',...
-          'Enter the number of points for the simulation :'};
+          'Enter the number of points for the simulation :',...
+          'Enter the energy per pulse of the laser (in nJ):', ...
+          'Enter the duration of pulse of the laser (in fs):'};
 dlg_title = 'Parameters for the simulations';
 num_lines = 1;
-defaultans = {'1023','1','1.45','0.4','3','62.5','-40','3200'};
+defaultans = {'1023','1','1.45','0.4','3','62.5','-40','3200','200','150'};
 options.Interpreter = 'tex';
 answer = inputdlg(prompt,dlg_title,num_lines,defaultans,options);
 
@@ -37,6 +39,12 @@ global M;
 M = sqrt(pi*w0^2*On/l); % Square root of the beam-quality factor
 global zr;
 zr = w0/On; % Rayleigh distance
+global Ep;
+Ep = check_user_input(answer,9,defaultans) * 1e-9;
+global tp;
+tp = check_user_input(answer,10,defaultans) * 1e-15;
+global Pin;
+Pin = Ep/tp * sqrt(pi/2);
 %% 
 % Fiber parameters
 
@@ -52,9 +60,9 @@ zmax = zi + R; % Radius of the fiber
 global res;
 res = check_user_input(answer,8,defaultans); % Numerical resolution
 global window_width;
-window_width = 1;
+window_width = 5;
 window_width_3D = 250;
-step_points_3D = 25;
+step_points_3D = 100;
 global z;
 z = linspace(-2*zmax,2*zmax,res); % Propagation coordinates
 global pix2metersXY;
@@ -68,7 +76,7 @@ pix2metersZ = (z(1,end)-z(1,1))/res; % Conversion factor to pass from pixels mea
 global q;
 q = @(z) z + 1i*zr; % Inline function to compute the Complex beam parameter
 global w;
-w = @(z) w0*sqrt(1+(z/z(1,1)^2)); % Inline function to compute the Gaussian beam width
+w = @(z) w0*sqrt(1+(z/zr)^2); % Inline function to compute the Gaussian beam width
 
 %% Simulations
 % Computations for both axes
@@ -76,4 +84,4 @@ w = @(z) w0*sqrt(1+(z/z(1,1)^2)); % Inline function to compute the Gaussian beam
 [Py,pIy,pFy] = calcul_y;
 
 % Cmputations for the volume
-calcul_3D(Px,pFx,Py,pFy,1e4,window_width_3D,step_points_3D);
+calcul_3D(Px,pFx,Py,pFy,1.82e6,window_width_3D,step_points_3D);

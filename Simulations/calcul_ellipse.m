@@ -2,7 +2,10 @@ function [ dX,dY ] = calcul_ellipse( Px,Py,pt,thr)
 %calcul_ellipse Calculate the semi-minor axis and the semi-major axis ellipse at the given point
 %   pt is the double at which the computation takes place
 
-Lx = find(Px(pt,:) >= thr); % Searching for the value corresponding to the beam diameter
+global w;
+global pix2metersZ;
+
+Lx = find((2*pi*Px(pt,:))/(pi*feval(w,pt*pix2metersZ)^2) >= thr); % Searching for the value corresponding to the beam diameter
 if isempty(Lx) % Taking care of the empty case by returning zeros axis
     dX = 0;
     dY = 0;
@@ -13,7 +16,7 @@ else
     dX = Lx2 - Lx1; % Beam diameter in pixel
 end
 
-Ly = find(Py(pt,:) >= thr); % Searching for the value corresponding to the beam diameter
+Ly = find((2*pi*Px(pt,:))/(pi*feval(w,pt*pix2metersZ)^2) >= thr); % Searching for the value corresponding to the beam diameter
 if isempty(Ly) % Taking care of the empty case by returning zeros axis
     dX = 0;
     dY = 0;
