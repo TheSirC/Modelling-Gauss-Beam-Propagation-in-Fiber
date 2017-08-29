@@ -1,5 +1,5 @@
 # Modelling focalisation of a gaussian beam through a cyndrical interface
-![Animation](https://github.com/TheSirC/Modelling-Gauss-Beam-Propagation-in-Fiber/blob/master/Simulations/Results/animation.gif)
+![Animation](https://github.com/TheSirC/Modelling-Gauss-Beam-Propagation-in-Fiber/blob/master/animation.gif)
 
 ## Theory
 The theory used to model the behavior of the beam is describded in [P. A. Bélanger, "Beam propagation and the ABCD ray matrices," Opt. Lett. 16, 196-198 (1991)](https://github.com/TheSirC/Modelling-Gauss-Beam-Propagation-in-Fiber/blob/master/Recherches/B%C3%A9langer%20-%201991%20-%20Beam%20propagation%20and%20the%20ABCD%20ray%20matrices.pdf).
@@ -12,4 +12,4 @@ The code computes each plane starting from the far left to the far right (the di
 For further details on the implementation, please refer to the [code](https://github.com/TheSirC/Modelling-Gauss-Beam-Propagation-in-Fiber/tree/master/Simulations) which is commented extensively.
 
 ## Results
-You can find images (intensity and isometric view) from different angles (XZ plane, YZ planes) for different depths [here](https://github.com/TheSirC/Modelling-Gauss-Beam-Propagation-in-Fiber/tree/master/Simulations/Results/).
+You can find images (intensity and isometric view) from different angles (XZ plane, YZ planes) for different depths [here](https://github.com/TheSirC/Modelling-Gauss-Beam-Propagation-in-Fiber/tree/master/Simulations/Résultats/).
